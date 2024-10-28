@@ -127,10 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="TStack.h" />
+    <ClInclude Include="..\src\TStack.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test_main.cpp" />
+    <ClCompile Include="..\src\test_main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
