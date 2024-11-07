@@ -1,11 +1,12 @@
 #include"TStack.h"
+#include"Calc.h"
 #include<string>
 #include<iostream>
 
 using namespace std;
 
 int main() {
-	TStack<int> stack(5);
+	/*TStack<int> stack(5);
 	cout << stack.isEmpty();
 	stack.push(1);
 	stack.push(2);
@@ -17,6 +18,10 @@ int main() {
 	stack.pop();
 	cout << stack.top() << endl;
 	stack.clr();
-	cout << stack.top();
-	
+	cout << stack.top();*/
+
+	Calc calc;
+	calc.setInfix("1+2-3+4");
+	calc.convertToPostfix();
+	cout << calc.getPostfix();
 }
