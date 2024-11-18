@@ -21,7 +21,6 @@ int main() {
 	cout << stack.top();*/
 
 	Calc calc;
-	calc.setInfix("1+2-3+4");
-	calc.convertToPostfix();
-	cout << calc.getPostfix();
+	calc.setInfix("2+(-5*2)");
+	cout << calc.calc();
 }

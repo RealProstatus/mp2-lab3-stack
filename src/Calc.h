@@ -5,6 +5,10 @@
 
 using namespace std;
 
+enum Operations
+{
+	Sin,Cos=0,Exp=0,Bracket=0, Add, Sub=1, Mult, Div=2,Pow
+};
 
 class Calc {
 	string infix;				//выражение в инфиксной форме

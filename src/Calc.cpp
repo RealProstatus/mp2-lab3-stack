@@ -74,13 +74,18 @@ void Calc::convertToPostfix() {
 	for (int i = 0; i < str.size(); i++) {
 		if (str[i] == '(') CharStack.push(str[i]);
 		else {
-			if ((str[i] >= '0' && str[i] <= '9') || str[i] == '.') postfix += str[i];
+			if ((str[i] >= '0' && str[i] <= '9') || str[i] == '.') {
+				size_t idx;
+				double tmp = stod(&str[i], &idx);
+				postfix += str.substr(i, idx); postfix += " ";
+				i += idx - 1;
+			} 
 			else {
 				if (str[i] == ')') {
 					try {
 						char a = CharStack.pop();
 						while (a != '(') {
-							postfix += a; postfix += ' ';
+							postfix += a; postfix +=  " ";
 							a = CharStack.pop();
 						}
 					}
@@ -89,12 +94,90 @@ void Calc::convertToPostfix() {
 				else {
 					if (str[i] == '+' || str[i] == '^' || str[i] == '/' || str[i] == '*' || str[i] == '-') {
 						while (OpPriority(str[i]) <= OpPriority(CharStack.top())) {
-							postfix += CharStack.pop(); postfix += ' ';
+							postfix += CharStack.pop(); postfix += " ";
 						}
 						CharStack.push(str[i]);
 					}
 				}
 			}
 		}
+	}
+}
+
+double Calc::calc() {
+	string str = "(" + infix + ")";
+	CharStack.clr(); NumStack.clr();
+	for (int i = 0; i < str.size(); i++) {
+		if (str[i] <= '9' && str[i] >= '0') {
+			size_t idx;
+			NumStack.push(stod(&str[i], &idx));
+			i += idx - 1;
+		}
+		else {
+			if (str[i] == '+' || str[i] == '^' || str[i] == '/' || str[i] == '*' || str[i] == '-') {
+				while (OpPriority(CharStack.top()) >= OpPriority(str[i])) {
+					double scnd = NumStack.pop();
+					double fst = NumStack.pop();
+					switch (CharStack.pop()) {
+					case '+':
+						NumStack.push(fst + scnd); break;
+					case '-':
+						NumStack.push(fst - scnd); break;
+					case '/':
+						NumStack.push(fst / scnd); break;
+					case '*':
+						NumStack.push(fst * scnd); break;
+					case '^':
+						NumStack.push(pow(fst, scnd)); break;
+					default:
+						break;
+					}	
+				}
+				CharStack.push(str[i]);
+			}
+			else {
+				if (str[i] == ')') {
+					char op = CharStack.pop();
+					while (op != '(') {
+						double scnd = NumStack.pop();
+						double fst = NumStack.pop();
+						switch (op) {
+						case '+':
+							NumStack.push(fst + scnd); break;
+						case '-':
+							NumStack.push(fst - scnd); break;
+						case '/':
+							NumStack.push(fst / scnd); break;
+						case '*':
+							NumStack.push(fst * scnd); break;
+						case '^':
+							NumStack.push(pow(fst, scnd)); break;
+						default:
+							break;
+						}
+						op = CharStack.pop();
+					}
+				}
+				else {
+					if (str[i] == '(') {
+						CharStack.push(str[i]);
+						if (str[i + 1] == '-') {
+							size_t idx;
+							NumStack.push(-1.0*stod(&str[i+2], &idx));
+							i += idx + 1;
+						}
+					}
+						
+				}
+			}
+		}
+	}//закончилась обработка строки
+
+	double result = NumStack.pop();
+	if (CharStack.isEmpty() && NumStack.isEmpty()) {
+		return result;
+	}
+	else {
+		throw - 2531;
 	}
 }
