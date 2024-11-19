@@ -16,7 +16,6 @@ class Calc {
 	TStack<double> NumStack;	//стек для вычисления результата
 	TStack<char> CharStack;		//стек для перевода из инфиксной в постфиксную
 
-	void convertToPostfix();
 	int OpPriority(char op) const;
 public:
 	Calc();
@@ -26,6 +25,9 @@ public:
 	string getInfix();
 	void setPostfix(char* str);
 	void setPostfix(string str);
+	string getPostfix();
+
+	void convertToPostfix();
 
 	double calcUsingPostfix();
 	double calc();

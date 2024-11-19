@@ -7,7 +7,8 @@ void Calc::setInfix(char* str) { string tmp(str); infix = tmp; }
 void Calc::setInfix(string str) { infix = str; }
 string Calc::getInfix() { return infix; }
 void Calc::setPostfix(char* str) { string tmp(str); postfix = tmp; }	
-void Calc::setPostfix(string str) { postfix = str; }					
+void Calc::setPostfix(string str) { postfix = str; }
+string Calc::getPostfix() { return postfix; }
 int Calc::OpPriority(char op) const{
 	switch (op) {
 	case 's':
@@ -39,21 +40,28 @@ double Calc::calcUsingPostfix() {
 			i += idx - 1;
 		}
 		else {
-			if (postfix[i] == '+' || postfix[i] == '/' || postfix[i] == '*' || postfix[i] == '-' || postfix[i] == '^') {
+			if (postfix[i] == '+' || postfix[i] == '/' || postfix[i] == '*' 
+				|| postfix[i] == '-' || postfix[i] == '^' ||
+				postfix[i] == 'c' || postfix[i]=='s'|| postfix[i]=='e') {
 				try {
 					double scnd = NumStack.pop();
-					double fst = NumStack.pop();
 					switch (postfix[i]) {
+					case 'c':
+						NumStack.push(cos(scnd)); break;
+					case 's':
+						NumStack.push(sin(scnd)); break;
+					case 'e':
+						NumStack.push(exp(scnd)); break;
 					case '+':
-						NumStack.push(fst + scnd); break;
+						NumStack.push(NumStack.pop() + scnd); break;
 					case '-':
-						NumStack.push(fst - scnd); break;
+						NumStack.push(NumStack.pop() - scnd); break;
 					case '/':
-						NumStack.push(fst / scnd); break;
+						NumStack.push(NumStack.pop() / scnd); break;
 					case '*':
-						NumStack.push(fst * scnd); break;
+						NumStack.push(NumStack.pop() * scnd); break;
 					case '^':
-						NumStack.push(pow(fst, scnd)); break;
+						NumStack.push(pow(NumStack.pop(), scnd)); break;
 					default:
 						break;
 					}
@@ -81,13 +89,13 @@ void Calc::convertToPostfix() {
 				double tmp = stod(&str[i], &idx);
 				postfix += str.substr(i, idx); postfix += " ";
 				i += idx - 1;
-			} 
+			}
 			else {
 				if (str[i] == ')') {
 					try {
 						char a = CharStack.pop();
 						while (a != '(') {
-							postfix += a; postfix +=  " ";
+							postfix += a; postfix += " ";
 							a = CharStack.pop();
 						}
 					}
@@ -99,6 +107,27 @@ void Calc::convertToPostfix() {
 							postfix += CharStack.pop(); postfix += " ";
 						}
 						CharStack.push(str[i]);
+					}
+					else {
+						if (str[i] == 'c' && str[i + 1] == 'o' && str[i + 2] == 's' && str[i + 3] == '(') {
+							CharStack.push(Operations::Bracket);
+							CharStack.push(Operations::Cos);
+							i += 3;
+						}
+						else {
+							if (str[i] == 's' && str[i + 1] == 'i' && str[i + 2] == 'n' && str[i + 3] == '(') {
+								CharStack.push(Operations::Bracket);
+								CharStack.push(Operations::Sin);
+								i += 3;
+							}
+							else {
+								if (str[i] == 'e' && str[i + 1] == 'x' && str[i + 2] == 'p' && str[i + 3] == '(') {
+									CharStack.push(Operations::Bracket);
+									CharStack.push(Operations::Exp);
+									i += 3;
+								}
+							}
+						}
 					}
 				}
 			}
@@ -113,8 +142,7 @@ double Calc::calc() {
 		if (str[i] <= '9' && str[i] >= '0') {
 			size_t idx;
 			NumStack.push(stod(&str[i], &idx));
-
-		i += idx - 1;
+			i += idx - 1;
 		}
 		else {
 			if (str[i] == '+' || str[i] == '^' || str[i] == '/' || str[i] == '*' || str[i] == '-') {
@@ -168,7 +196,7 @@ double Calc::calc() {
 				}
 				else {
 					if (str[i] == '(') {
-						CharStack.push(str[i]);
+							CharStack.push(str[i]);
 						if (str[i + 1] == '-') {
 							size_t idx;
 							NumStack.push(-1.0*stod(&str[i+2], &idx));

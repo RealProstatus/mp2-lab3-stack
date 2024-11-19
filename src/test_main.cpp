@@ -7,5 +7,6 @@ using namespace std;
 
 int main() {
 	Calc calc;
-	cout << calc.calc("1+exp(0)")<<endl; 
+	calc.setInfix("1.5+cos(exp(0))");
+	cout<<cos(exp(0))<<endl<<calc.calc();
 }
