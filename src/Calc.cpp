@@ -6,11 +6,13 @@ Calc::Calc(): NumStack(100), CharStack(100) { }
 void Calc::setInfix(char* str) { string tmp(str); infix = tmp; }
 void Calc::setInfix(string str) { infix = str; }
 string Calc::getInfix() { return infix; }
-void Calc::setPostfix(char* str) { string tmp(str); postfix = tmp; }	//потом убрать, это не интерфейс
-void Calc::setPostfix(string str) { postfix = str; }					//потом убрать, это не интерфейс
-string Calc::getPostfix() { return postfix; }							//потом убрать, это не интерфейс
+void Calc::setPostfix(char* str) { string tmp(str); postfix = tmp; }	
+void Calc::setPostfix(string str) { postfix = str; }					
 int Calc::OpPriority(char op) const{
 	switch (op) {
+	case 's':
+	case 'c':
+	case 'e':
 	case '(':
 		return 0; break;
 	case '+':
@@ -111,7 +113,8 @@ double Calc::calc() {
 		if (str[i] <= '9' && str[i] >= '0') {
 			size_t idx;
 			NumStack.push(stod(&str[i], &idx));
-			i += idx - 1;
+
+		i += idx - 1;
 		}
 		else {
 			if (str[i] == '+' || str[i] == '^' || str[i] == '/' || str[i] == '*' || str[i] == '-') {
@@ -140,18 +143,23 @@ double Calc::calc() {
 					char op = CharStack.pop();
 					while (op != '(') {
 						double scnd = NumStack.pop();
-						double fst = NumStack.pop();
 						switch (op) {
+						case 'c':
+							NumStack.push(cos(scnd)); break;
+						case 's':
+							NumStack.push(sin(scnd)); break;
+						case 'e':
+							NumStack.push(exp(scnd)); break;
 						case '+':
-							NumStack.push(fst + scnd); break;
+							NumStack.push(NumStack.pop() + scnd); break;
 						case '-':
-							NumStack.push(fst - scnd); break;
+							NumStack.push(NumStack.pop() - scnd); break;
 						case '/':
-							NumStack.push(fst / scnd); break;
+							NumStack.push(NumStack.pop() / scnd); break;
 						case '*':
-							NumStack.push(fst * scnd); break;
+							NumStack.push(NumStack.pop() * scnd); break;
 						case '^':
-							NumStack.push(pow(fst, scnd)); break;
+							NumStack.push(pow(NumStack.pop(), scnd)); break;
 						default:
 							break;
 						}
@@ -167,6 +175,27 @@ double Calc::calc() {
 							i += idx + 1;
 						}
 					}
+					else {
+						if (str[i] == 'c' && str[i + 1] == 'o' && str[i + 2] == 's' && str[i + 3] == '(') {
+							CharStack.push(Operations::Bracket);
+							CharStack.push(Operations::Cos);
+							i += 3;
+						}
+						else {
+							if (str[i] == 's' && str[i + 1] == 'i' && str[i + 2] == 'n' && str[i + 3] == '(') {
+								CharStack.push(Operations::Bracket);
+								CharStack.push(Operations::Sin);
+								i += 3;
+							}
+							else {
+								if (str[i] == 'e' && str[i + 1] == 'x' && str[i + 2] == 'p' && str[i + 3] == '(') {
+									CharStack.push(Operations::Bracket);
+									CharStack.push(Operations::Exp);
+									i += 3;
+								}
+							}
+						}
+					}
 						
 				}
 			}
@@ -180,4 +209,9 @@ double Calc::calc() {
 	else {
 		throw - 2531;
 	}
+}
+
+double Calc::calc(string inp) {
+	infix = inp;
+	return calc();
 }

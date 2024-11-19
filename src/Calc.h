@@ -5,9 +5,9 @@
 
 using namespace std;
 
-enum Operations
+enum Operations : char
 {
-	Sin,Cos=0,Exp=0,Bracket=0, Add, Sub=1, Mult, Div=2,Pow
+	Sin = 's', Cos = 'c', Exp = 'e', Bracket = '('
 };
 
 class Calc {
@@ -16,6 +16,7 @@ class Calc {
 	TStack<double> NumStack;	//стек для вычисления результата
 	TStack<char> CharStack;		//стек для перевода из инфиксной в постфиксную
 
+	void convertToPostfix();
 	int OpPriority(char op) const;
 public:
 	Calc();
@@ -23,12 +24,10 @@ public:
 	void setInfix(char* str);
 	void setInfix(string str);
 	string getInfix();
-	void setPostfix(char* str); //потом убрать, это не интерфейс
-	void setPostfix(string str);//потом убрать, это не интерфейс
-	string getPostfix();		//потом убрать, это не интерфейс
+	void setPostfix(char* str);
+	void setPostfix(string str);
 
 	double calcUsingPostfix();
 	double calc();
-
-	void convertToPostfix();//потом скрыть этот метод в private
+	double calc(string inp);
 };
