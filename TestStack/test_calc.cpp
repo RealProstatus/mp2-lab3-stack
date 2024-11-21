@@ -3,17 +3,20 @@
 
 #include"gtest.h"
 
+//	TODO:	Тесты должны содержать длинные и сложные выражения
+//	TODO:	Тесты на корректность
+
 TEST(Calc, correctness_of_calculating_cos) {
 	Calc c;
-	EXPECT_EQ(2 + cos(3), c.calc("2 + cos(3)"));
+	EXPECT_EQ(2 + cos(3.1415926), c.calc("2 + cos(3.1415926)"));
 }
 TEST(Calc, correctness_of_calculating_sin) {
 	Calc c;
-	EXPECT_EQ(2 + sin(3), c.calc("2 + sin(3)"));
+	EXPECT_EQ(2 + sin(3.1415926), c.calc("2 + sin(3.1415926)"));
 }
 TEST(Calc, correctness_of_calculating_exp) {
 	Calc c;
-	EXPECT_EQ(2 + exp(3), c.calc("2 + exp(3)"));
+	EXPECT_EQ((10 * 2 + exp(0))*pow(10,32), c.calc("(10*2 + exp(0))*(10^32)"));
 }
 
 TEST(Calc, correctness_of_calculating_negative_subexpression) {
