@@ -66,16 +66,22 @@ double Calc::calcUsingPostfix() {
 						break;
 					}
 				}
-				catch (const int i) {
+				catch (EPopFromEmptyStack e) {
+					e.show();
 					throw EWrongExpression();
 				}
 			}
 		}
 		i++;
 	}
-	double res = NumStack.pop();
-	if (NumStack.isEmpty()) return res;
-	else throw EWrongExpression();
+	try { 
+		double res = NumStack.pop();
+		if (NumStack.isEmpty()) return res;
+		else throw EWrongExpression();
+	}
+	catch (EPopFromEmptyStack e) { e.show(); throw EWrongExpression();
+	}
+	
 }
 
 void Calc::convertToPostfix() {
@@ -99,7 +105,7 @@ void Calc::convertToPostfix() {
 							a = CharStack.pop();
 						}
 					}
-					catch (const int i) { throw EWrongExpression(); }
+					catch (EPopFromEmptyStack e) { e.show(); throw EWrongExpression(); }
 				}
 				else {
 					if (str[i] == '+' || str[i] == '^' || str[i] == '/' || str[i] == '*' || str[i] == '-') {
@@ -220,6 +226,10 @@ double Calc::calc() {
 									CharStack.push(Operations::Bracket);
 									CharStack.push(Operations::Exp);
 									i += 3;
+								}
+								else {
+									if (str[i] != ' ')
+										throw EWrongExpression();
 								}
 							}
 						}
