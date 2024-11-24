@@ -1,14 +1,14 @@
 #include"Calc.h"
 #include<math.h>
 
-Calc::Calc(): NumStack(100), CharStack(100) { }
+Calc::Calc(): NumStack(64), CharStack(64) { }
 
-void Calc::setInfix(char* str) { string tmp(str); infix = tmp; }
-void Calc::setInfix(string str) { infix = str; }
-string Calc::getInfix() { return infix; }
-void Calc::setPostfix(char* str) { string tmp(str); postfix = tmp; }	
-void Calc::setPostfix(string str) { postfix = str; }
-string Calc::getPostfix() { return postfix; }
+void Calc::setInfix(char* str) { std::string tmp(str); infix = tmp; }
+void Calc::setInfix(std::string str) { infix = str; }
+std::string Calc::getInfix() { return infix; }
+void Calc::setPostfix(char* str) { std::string tmp(str); postfix = tmp; }	
+void Calc::setPostfix(std::string str) { postfix = str; }
+std::string Calc::getPostfix() { return postfix; }
 int Calc::OpPriority(char op) const{
 	switch (op) {
 	case 's':
@@ -35,7 +35,7 @@ double Calc::calcUsingPostfix() {
 	while (i != postfix.size()) {
 		if (postfix[i] >= '0' && postfix[i] <= '9') {
 			size_t idx;
-			double tmp = stod(&postfix[i], &idx);
+			double tmp = std::stod(&postfix[i], &idx);
 			NumStack.push(tmp);
 			i += idx - 1;
 		}
@@ -80,13 +80,13 @@ double Calc::calcUsingPostfix() {
 
 void Calc::convertToPostfix() {
 	postfix = ""; CharStack.clr();
-	string str = "(" + infix + ")";
+	std::string str = "(" + infix + ")";
 	for (int i = 0; i < str.size(); i++) {
 		if (str[i] == '(') CharStack.push(str[i]);
 		else {
 			if ((str[i] >= '0' && str[i] <= '9') || str[i] == '.') {
 				size_t idx;
-				double tmp = stod(&str[i], &idx);
+				double tmp = std::stod(&str[i], &idx);
 				postfix += str.substr(i, idx); postfix += " ";
 				i += idx - 1;
 			}
@@ -136,12 +136,12 @@ void Calc::convertToPostfix() {
 }
 
 double Calc::calc() {
-	string str = "(" + infix + ")";
+	std::string str = "(" + infix + ")";
 	CharStack.clr(); NumStack.clr();
 	for (int i = 0; i < str.size(); i++) {
 		if (str[i] <= '9' && str[i] >= '0') {
 			size_t idx;
-			NumStack.push(stod(&str[i], &idx));
+			NumStack.push(std::stod(&str[i], &idx));
 			i += idx - 1;
 		}
 		else {
@@ -199,7 +199,7 @@ double Calc::calc() {
 							CharStack.push(str[i]);
 						if (str[i + 1] == '-') {
 							size_t idx;
-							NumStack.push(-1.0*stod(&str[i+2], &idx));
+							NumStack.push(-1.0*std::stod(&str[i+2], &idx));
 							i += idx + 1;
 						}
 					}
@@ -239,7 +239,7 @@ double Calc::calc() {
 	}
 }
 
-double Calc::calc(string inp) {
+double Calc::calc(std::string inp) {
 	infix = inp;
 	return calc();
 }

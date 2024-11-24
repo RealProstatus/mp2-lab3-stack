@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Calc.h" />
+    <ClInclude Include="..\src\Exception.h" />
     <ClInclude Include="..\src\TStack.h" />
   </ItemGroup>
   <ItemGroup>
