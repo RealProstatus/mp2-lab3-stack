@@ -2,6 +2,7 @@
 
 #include<string>
 #include"TStack.h"
+#include"Exception.h"
 
 using namespace std;
 

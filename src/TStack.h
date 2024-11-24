@@ -1,5 +1,7 @@
 #pragma once
 
+#include"Exception.h"
+
 template<class T>
 class TStack {
 	T* pMem;
@@ -12,7 +14,7 @@ public:
 			this->maxSize = maxSize;
 			index = -1;
 		}
-		else { throw 2531; }
+		else { throw EStackWithNegativeOrZeroSize(); }
 	}
 	TStack(const TStack<T>& s) {
 		pMem = new T[s.maxSize];
@@ -50,16 +52,16 @@ public:
 	bool isEmpty() const { return index == -1; }
 	bool isFull() const { return index == (maxSize - 1); }
 	T pop() {
-		if (this->isEmpty()) throw 2531;
+		if (this->isEmpty()) throw EPopFromEmptyStack();
 		return pMem[index--];
 	}
 	void push(T val) {
-		if (this->isFull()) throw 2531;
+		if (this->isFull()) throw EPushInFullStack();
 		pMem[++index] = val;
 	}
 	T top() { 
 		if (index != -1) return pMem[index];
-		throw 2531;
+		throw ETopFromEmptyStack();
 	}
 	void clr() { index = -1; }
 };
