@@ -3,9 +3,7 @@
 
 #include"gtest.h"
 
-//	TODO:	Тесты должны содержать длинные и сложные выражения
-//	TODO:	Тесты на корректность
-
+//тесты на верных выражениях
 TEST(Calc, correctness_of_calculating_cos) {
 	Calc c;
 	EXPECT_EQ(2 + cos(3.1415926), c.calc("2 + cos(3.1415926)"));
@@ -25,29 +23,55 @@ TEST(Calc, correctness_of_calculating_negative_subexpression) {
 	EXPECT_EQ(2 + (-3+2), c.calc());
 }
 
-TEST(Calc, correctness_of_calculating_simple_numbers) {
+TEST(Calc, correctness_expression_1) {
 	Calc c;
-	c.setInfix("2+2*2");
-	c.convertToPostfix();
-	EXPECT_EQ("2 2 2 * + ",c.getPostfix());
-	EXPECT_EQ(2 + 2 * 2, c.calcUsingPostfix());
-	EXPECT_EQ(2 + 2 * 2, c.calc());
+	double res = c.calc("10+(32.64/6)^3-(3.2^0*48)");
+	EXPECT_EQ(10 + pow(32.64 / 6, 3) - (pow(3.2, 0) * 48), res);
 }
 
-TEST(Calc, correctness_of_calculating_FP_numbers) {
+TEST(Calc, correctness_expression_2) {
 	Calc c;
-	c.setInfix("2.2+2*2");
-	c.convertToPostfix();
-	EXPECT_EQ("2.2 2 2 * + ", c.getPostfix());
-	EXPECT_EQ(2.2 + 2 * 2, c.calcUsingPostfix());
-	EXPECT_EQ(2.2 + 2 * 2, c.calc());
+	double res = c.calc("exp(2.6)+32.8^(-3+489.7*3.2)");
+	EXPECT_EQ(exp(2.6) + pow(32.8, -3 + 489.7 * 3.2), res);
 }
 
-TEST(Calc, correctness_of_calculating_with_brackets) {
+TEST(Calc, correctness_expression_3) {
 	Calc c;
-	c.setInfix("2.2*(3.1+4.0)");
-	c.convertToPostfix();
-	EXPECT_EQ("2.2 3.1 4.0 + * ", c.getPostfix());
-	EXPECT_EQ(2.2 * (3.1 + 4.0), c.calcUsingPostfix());
-	EXPECT_EQ(2.2 * (3.1 + 4.0), c.calc());
+	double res = c.calc("3^(cos(10)^2 + sin(10)^2)");
+	EXPECT_EQ(pow(3,cos(10)*cos(10) + sin(10)*sin(10)), res);
+}
+
+TEST(Calc, correctness_expression_4) {
+	Calc c;
+	double res = c.calc("148.23^(-125.48-90.54*exp(23)-4)");
+	EXPECT_EQ(pow(148.23, -125.48 - 90.54 * exp(23) - 4), res);
+}
+
+TEST(Calc, correctness_expression_5) {
+	Calc c;
+	double res = c.calc("exp(cos(10)^2 + sin(10))^20.5");
+	EXPECT_EQ(pow(exp(cos(10)*cos(10) + sin(10)), 20.5), res);
+}
+
+//тесты на ввод неверных выражений
+TEST(Calc, throws_when_char_stack_overflow) {
+	Calc c;
+	ASSERT_ANY_THROW(c.calc("15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15))))))))))))))))))"));
+}
+
+TEST(Calc, throws_when_wrong_bracket_sequence) {
+	Calc c;
+	ASSERT_ANY_THROW(c.calc("(10+12))"));
+}
+TEST(Calc, throws_when_unsupported_operation) {
+	Calc c;
+	ASSERT_ANY_THROW(c.calc("(10%12)"));
+}
+TEST(Calc, throws_when_too_much_opearations) {
+	Calc c;
+	ASSERT_ANY_THROW(c.calc("(10//12)"));
+}
+TEST(Calc, throws_when_not_enough_operands) {
+	Calc c;
+	ASSERT_ANY_THROW(c.calc("(10/)"));
 }

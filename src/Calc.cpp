@@ -1,7 +1,7 @@
 #include"Calc.h"
 #include<math.h>
 
-Calc::Calc(): NumStack(64), CharStack(64) { }
+Calc::Calc(): NumStack(16), CharStack(16) { }
 
 void Calc::setInfix(char* str) { std::string tmp(str); infix = tmp; }
 void Calc::setInfix(std::string str) { infix = str; }

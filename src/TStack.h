@@ -8,7 +8,7 @@ class TStack {
 	int maxSize;
 	int index;
 public:
-	TStack(int maxSize = 64) {
+	TStack(int maxSize = 32) {
 		if (maxSize > 0) {
 			pMem = new T[maxSize];
 			this->maxSize = maxSize;
