@@ -70,6 +70,10 @@ double Calc::calcUsingPostfix() {
 					e.show();
 					throw EWrongExpression();
 				}
+				catch(EPushInFullStack e){
+					e.show();
+					throw EWrongExpression();
+				}
 			}
 		}
 		i++;
@@ -145,87 +149,130 @@ double Calc::calc() {
 	std::string str = "(" + infix + ")";
 	CharStack.clr(); NumStack.clr();
 	for (int i = 0; i < str.size(); i++) {
-		if (str[i] <= '9' && str[i] >= '0') {
+		if (str[i] <= '9' && str[i] >= '0') { //обработка числа
 			size_t idx;
-			NumStack.push(std::stod(&str[i], &idx));
-			i += idx - 1;
-		}
-		else {
-			if (str[i] == '+' || str[i] == '^' || str[i] == '/' || str[i] == '*' || str[i] == '-') {
-				while (OpPriority(CharStack.top()) >= OpPriority(str[i])) {
-					double scnd = NumStack.pop();
-					double fst = NumStack.pop();
-					switch (CharStack.pop()) {
-					case '+':
-						NumStack.push(fst + scnd); break;
-					case '-':
-						NumStack.push(fst - scnd); break;
-					case '/':
-						NumStack.push(fst / scnd); break;
-					case '*':
-						NumStack.push(fst * scnd); break;
-					case '^':
-						NumStack.push(pow(fst, scnd)); break;
-					default:
-						break;
-					}	
-				}
-				CharStack.push(str[i]);
+			try{
+				NumStack.push(std::stod(&str[i], &idx));
+				i += idx - 1;
 			}
-			else {
-				if (str[i] == ')') {
-					char op = CharStack.pop();
-					while (op != '(') {
+			catch (EPushInFullStack e) {
+				e.show();
+				throw EWrongExpression();
+			}
+			
+		}
+		else { //обработка бинарных опреаций
+			if (str[i] == '+' || str[i] == '^' || str[i] == '/' || str[i] == '*' || str[i] == '-') {
+				try {
+					while (OpPriority(CharStack.top()) >= OpPriority(str[i])) {
 						double scnd = NumStack.pop();
-						switch (op) {
-						case 'c':
-							NumStack.push(cos(scnd)); break;
-						case 's':
-							NumStack.push(sin(scnd)); break;
-						case 'e':
-							NumStack.push(exp(scnd)); break;
+						double fst = NumStack.pop();
+						switch (CharStack.pop()) {
 						case '+':
-							NumStack.push(NumStack.pop() + scnd); break;
+							NumStack.push(fst + scnd); break;
 						case '-':
-							NumStack.push(NumStack.pop() - scnd); break;
+							NumStack.push(fst - scnd); break;
 						case '/':
-							NumStack.push(NumStack.pop() / scnd); break;
+							NumStack.push(fst / scnd); break;
 						case '*':
-							NumStack.push(NumStack.pop() * scnd); break;
+							NumStack.push(fst * scnd); break;
 						case '^':
-							NumStack.push(pow(NumStack.pop(), scnd)); break;
+							NumStack.push(pow(fst, scnd)); break;
 						default:
 							break;
 						}
-						op = CharStack.pop();
+					}
+					CharStack.push(str[i]);
+				}
+				catch (EPopFromEmptyStack exc) {
+					exc.show(); throw EWrongExpression();
+				}
+				catch (EPushInFullStack exc) {
+					exc.show(); throw EWrongExpression();
+				}
+			}
+			else { //обработка закрывающей скобки
+				if (str[i] == ')') {
+					try {
+						char op = CharStack.pop();
+						while (op != '(') {
+							double scnd = NumStack.pop();
+							switch (op) {
+							case 'c':
+								NumStack.push(cos(scnd)); break;
+							case 's':
+								NumStack.push(sin(scnd)); break;
+							case 'e':
+								NumStack.push(exp(scnd)); break;
+							case '+':
+								NumStack.push(NumStack.pop() + scnd); break;
+							case '-':
+								NumStack.push(NumStack.pop() - scnd); break;
+							case '/':
+								NumStack.push(NumStack.pop() / scnd); break;
+							case '*':
+								NumStack.push(NumStack.pop() * scnd); break;
+							case '^':
+								NumStack.push(pow(NumStack.pop(), scnd)); break;
+							default:
+								break;
+							}
+							op = CharStack.pop();
+						}
+					}
+					catch (EPopFromEmptyStack exc) {
+						exc.show(); throw EWrongExpression();
+					}
+					catch (EPushInFullStack exc) {
+						exc.show(); throw EWrongExpression();
 					}
 				}
-				else {
+				else { //обработка открывающей скобки + унарного минуса в начале подвыражения
 					if (str[i] == '(') {
+						try {
 							CharStack.push(str[i]);
-						if (str[i + 1] == '-') {
-							size_t idx;
-							NumStack.push(-1.0*std::stod(&str[i+2], &idx));
-							i += idx + 1;
+							if (str[i + 1] == '-') {
+								size_t idx;
+								NumStack.push(-1.0 * std::stod(&str[i + 2], &idx));
+								i += idx + 1;
+							}
+						}
+						catch (EPushInFullStack exc) {
+							exc.show(); throw EWrongExpression();
 						}
 					}
-					else {
+					else { //обрабокта косинуса(считается особым видом скобки)
 						if (str[i] == 'c' && str[i + 1] == 'o' && str[i + 2] == 's' && str[i + 3] == '(') {
-							CharStack.push(Operations::Bracket);
-							CharStack.push(Operations::Cos);
-							i += 3;
-						}
-						else {
-							if (str[i] == 's' && str[i + 1] == 'i' && str[i + 2] == 'n' && str[i + 3] == '(') {
+							try {
 								CharStack.push(Operations::Bracket);
-								CharStack.push(Operations::Sin);
+								CharStack.push(Operations::Cos);
 								i += 3;
 							}
-							else {
-								if (str[i] == 'e' && str[i + 1] == 'x' && str[i + 2] == 'p' && str[i + 3] == '(') {
+							catch (EPushInFullStack exc) {
+								exc.show(); throw EWrongExpression(); 
+							}
+						}
+						else { //обрабокта синуса(считается особым видом скобки)
+							if (str[i] == 's' && str[i + 1] == 'i' && str[i + 2] == 'n' && str[i + 3] == '(') {
+								try {
 									CharStack.push(Operations::Bracket);
-									CharStack.push(Operations::Exp);
+									CharStack.push(Operations::Sin);
 									i += 3;
+								}
+								catch (EPushInFullStack exc) {
+									exc.show(); throw EWrongExpression();
+								}
+							}
+							else { //обрабокта экспоненты(считается особым видом скобки)
+								if (str[i] == 'e' && str[i + 1] == 'x' && str[i + 2] == 'p' && str[i + 3] == '(') {
+									try {
+										CharStack.push(Operations::Bracket);
+										CharStack.push(Operations::Exp);
+										i += 3;
+									}
+									catch (EPushInFullStack exc) {
+										exc.show(); throw EWrongExpression();
+									}
 								}
 								else {
 									if (str[i] != ' ')
@@ -233,20 +280,21 @@ double Calc::calc() {
 								}
 							}
 						}
-					}
-						
+					}		
 				}
 			}
 		}
 	}//закончилась обработка строки
-
-	double result = NumStack.pop();
-	if (CharStack.isEmpty() && NumStack.isEmpty()) {
-		return result;
+	try {
+		double result = NumStack.pop();
+		if (CharStack.isEmpty() && NumStack.isEmpty()) {
+			return result;
+		}
+		else {
+			throw EWrongExpression();
+		}
 	}
-	else {
-		throw EWrongExpression();
-	}
+	catch (EPopFromEmptyStack e) { e.show(); throw EWrongExpression(); }
 }
 
 double Calc::calc(std::string inp) {
