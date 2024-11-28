@@ -10,8 +10,8 @@ enum Operations : char
 };
 
 class Calc {
-	std::string infix;				//выражение в инфиксной форме
-	std::string postfix;				//выражение в постфиксной форме
+	std::string infix;			//выражение в инфиксной форме
+	std::string postfix;		//выражение в постфиксной форме
 	TStack<double> NumStack;	//стек для вычисления результата
 	TStack<char> CharStack;		//стек для перевода из инфиксной в постфиксную
 

@@ -173,7 +173,10 @@ double Calc::calc() {
 						case '-':
 							NumStack.push(fst - scnd); break;
 						case '/':
-							NumStack.push(fst / scnd); break;
+							if (scnd != 0) {
+								NumStack.push(fst / scnd); break;
+							}
+							else throw EDivizionByZero();
 						case '*':
 							NumStack.push(fst * scnd); break;
 						case '^':
@@ -209,7 +212,10 @@ double Calc::calc() {
 							case '-':
 								NumStack.push(NumStack.pop() - scnd); break;
 							case '/':
-								NumStack.push(NumStack.pop() / scnd); break;
+								if (scnd != 0) {
+									NumStack.push(NumStack.pop() / scnd); break;
+								}
+								else throw EDivizionByZero();
 							case '*':
 								NumStack.push(NumStack.pop() * scnd); break;
 							case '^':

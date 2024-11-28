@@ -122,6 +122,10 @@ namespace CppWinForm1 {
 			exc.show();
 			l_result->Text = "Wrong expression!";
 		}
+		catch (EDivizionByZero exc) {
+			exc.show();
+			l_result->Text = "Divizion by zero!";
+		}
 	}
 	private: System::Void tb_keyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
 		if (e->KeyChar == 13) {

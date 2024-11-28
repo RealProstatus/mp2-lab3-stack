@@ -31,8 +31,8 @@ TEST(Calc, correctness_expression_1) {
 
 TEST(Calc, correctness_expression_2) {
 	Calc c;
-	double res = c.calc("exp(2.6)+32.8^(-3+489.7*3.2)");
-	EXPECT_EQ(exp(2.6) + pow(32.8, -3 + 489.7 * 3.2), res);
+	double res = c.calc("exp(2.6)+32.8^(-3+489.7/3.2)");
+	EXPECT_EQ(exp(2.6) + pow(32.8, -3 + 489.7 / 3.2), res);
 }
 
 TEST(Calc, correctness_expression_3) {
@@ -73,5 +73,9 @@ TEST(Calc, throws_when_too_much_opearations) {
 }
 TEST(Calc, throws_when_not_enough_operands) {
 	Calc c;
-	ASSERT_ANY_THROW(c.calc("(10/)"));
+	ASSERT_ANY_THROW(c.calc("10/"));
+}
+TEST(Calc, throws_when_divizion_by_zero) {
+	Calc c;
+	ASSERT_ANY_THROW(c.calc("10/0"));
 }

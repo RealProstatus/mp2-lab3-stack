@@ -43,3 +43,10 @@ public:
 		std::cout << "Wrong math expression!";
 	}
 };
+
+class EDivizionByZero : public Exception {
+public:
+	void show() {
+		std::cout << "Divizion by zero!";
+	}
+};
