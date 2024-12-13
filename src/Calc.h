@@ -1,7 +1,7 @@
 #pragma once
 
 #include<string>
-#include"TStack.h"
+#include"../sln/LLStack.h"
 #include"Exception.h"
 
 enum Operations : char
@@ -12,8 +12,8 @@ enum Operations : char
 class Calc {
 	std::string infix;			//выражение в инфиксной форме
 	std::string postfix;		//выражение в постфиксной форме
-	TStack<double> NumStack;	//стек для вычисления результата
-	TStack<char> CharStack;		//стек для перевода из инфиксной в постфиксную
+	LLStack<double> NumStack;	//стек для вычисления результата
+	LLStack<char> CharStack;		//стек для перевода из инфиксной в постфиксную
 
 	int OpPriority(char op) const;
 public:

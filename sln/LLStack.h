@@ -63,7 +63,7 @@ public:
 
 	void push(T val) {
 		try {
-			Node<T>* tmp = new Node<t>;
+			Node<T>* tmp = new Node<T>;
 			tmp->val = val;
 			tmp->pNext = pFirst;
 			pFirst = tmp;
@@ -94,7 +94,7 @@ public:
 			throw ETopFromEmptyStack();
 	}
 
-	void clear() {
+	void clr() {
 		while (pFirst != nullptr) {
 			Node<T>* tmp = pFirst;
 			pFirst = pFirst->pNext;

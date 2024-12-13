@@ -130,6 +130,7 @@
     <ClInclude Include="..\src\Calc.h" />
     <ClInclude Include="..\src\Exception.h" />
     <ClInclude Include="..\src\TStack.h" />
+    <ClInclude Include="LLStack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Calc.cpp" />
