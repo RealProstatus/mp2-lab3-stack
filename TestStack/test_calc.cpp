@@ -54,10 +54,6 @@ TEST(Calc, correctness_expression_5) {
 }
 
 //тесты на ввод неверных выражений
-TEST(Calc, throws_when_char_stack_overflow) {
-	Calc c;
-	ASSERT_ANY_THROW(c.calc("15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15+(15))))))))))))))))))"));
-}
 
 TEST(Calc, throws_when_wrong_bracket_sequence) {
 	Calc c;

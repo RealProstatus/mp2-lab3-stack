@@ -54,10 +54,10 @@ public:
 		try {
 			Node<T>* tmp = new Node<T>;
 			delete tmp;
-			return true;
+			return false;
 		}
 		catch (std::bad_alloc e) {
-			return false;
+			return true;
 		}
 	}
 
@@ -103,6 +103,8 @@ public:
 	}
 
 	bool operator==(const LLStack<T>& s) const {
+		if (this == &s) return true;
+
 		Node<T>* tmp = pFirst;
 		Node<T>* stmp = s.pFirst;
 
