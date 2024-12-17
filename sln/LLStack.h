@@ -10,26 +10,26 @@ struct Node {
 
 template<class T>
 class LLStack {
-	Node<T>* pFirst;
+	Node<T>* pFirst;//храним значения стека в списке инвертировано,т.е. pFirst указывает на верхний элемент стека
 public:
 	LLStack() { pFirst = nullptr; }
 
 	LLStack(const LLStack<T>& s) {
-		Node<T>* stmp = s.pFirst;
+		Node<T>* stmp = s.pFirst;//делаем ссылку на первый элемент второго стека, чтоб оп нему пройтись
 		if (stmp != nullptr) {
-			pFirst = new Node<T>;
+			pFirst = new Node<T>;//переносим первую ячейку
 			pFirst->val = stmp->val;
 			pFirst->pNext = nullptr;
 			
-			stmp = stmp->pNext;
+			stmp = stmp->pNext;//переход на вторую ячейку
 
-			Node<T>* prev = pFirst;
+			Node<T>* prev = pFirst;//нам нужно хранить ссылку на пред. ячейку, чтобы подцеплять друг за другом указатели
 			while (stmp != nullptr) {
 				Node<T>* newnode = new Node<T>;
 				newnode->val = stmp->val;
 				newnode->pNext = nullptr;
 				
-				prev->pNext = newnode;
+				prev->pNext = newnode;//подцепляем указатели
 
 				stmp = stmp->pNext;
 				prev = prev->pNext;
@@ -52,7 +52,7 @@ public:
 
 	bool isFull() const {
 		try {
-			Node<T>* tmp = new Node<T>;
+			Node<T>* tmp = new Node<T>;//пытаемся выделить память под новую ячейку
 			delete tmp;
 			return false;
 		}
@@ -105,17 +105,17 @@ public:
 	bool operator==(const LLStack<T>& s) const {
 		if (this == &s) return true;
 
-		Node<T>* tmp = pFirst;
+		Node<T>* tmp = pFirst;//два указателя для того, чтоб пробегаться по двум стекам
 		Node<T>* stmp = s.pFirst;
 
-		while (stmp != nullptr && tmp != nullptr) {
+		while (stmp != nullptr && tmp != nullptr) {//пробег, пока один из стеков не закончится
 			if (tmp->val != stmp->val)
 				return false;
 			tmp = tmp->pNext;
 			stmp = stmp->pNext;
 		}
 
-		return tmp == stmp;
+		return tmp == stmp;//если в одном из стеков что-то осталось, то они точно не равны, см. ниже
 		/*
 		* if(tmp != stmp) - разные размеры стеков
 		*	return false;
